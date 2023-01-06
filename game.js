@@ -9,11 +9,15 @@ let fps = 30
 let oneBlockSize = 21
 let colorWall = "red"
 
+const DIRECTION_UP = 1
+const DIRECTION_DOWN = 2
+const DIRECTION_LEFT = 3            
+const DIRECTION_RIGHT = 4
+
+
 let createRect = (x, y, width , height, color) => {
-    canvasContext.globalAlpha = 0.2;
     canvasContext.fillStyle = color
     canvasContext.fillRect (x, y, width, height)
-    canvasContext.globalAlpha = 1;
 }
 
 let map = [
@@ -72,12 +76,15 @@ let gameLoop = () => {
 
 let update = () => {
     //todo
+    pacman.moveProcess()
 }
 
 let draw = () => {
     //todo
-    drawMaze()
-    //drawWalls()
+    canvasContext.clearRect(0,0, canvas.width, canvas.height)
+    //drawMaze()
+    drawWalls()
+    pacman.draw()
 }
 
 let gameInterval =  setInterval(gameLoop, 1000/fps)
@@ -111,3 +118,15 @@ let drawWalls = () => {
         }
     }
 }
+
+let createPacman = () => {
+    pacman = new Pacman (
+        1 * oneBlockSize,
+        1 * oneBlockSize,
+        2 * oneBlockSize,
+        2 * oneBlockSize,
+        oneBlockSize / 5
+    )
+}
+
+createPacman()
