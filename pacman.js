@@ -5,7 +5,8 @@ class Pacman {
         this.width = width
         this.height = height 
         this.speed = speed
-        this.direction = DIRECTION_RIGHT
+        this.direction = DIRECTION_LEFT
+        this.nextDirection = DIRECTION_LEFT
         this.currentFrame = 0
         this.frameCount = 5
 
@@ -57,16 +58,37 @@ class Pacman {
     }
 
     eat() {
-
+        let i = 1
+        while (i < map.length){
+            let j = 0
+            while (j < map[0].length) {
+                if (map[i][j] != 0) {
+                    j--
+                } else if (((map[i][j] == 0 ) && (map[i][j+1] == 0) && (map[i+1][j] == 0) && (map[i+1][j+1] ==0))
+                    && ((i == this.getMapY()) && (j == this.getMapX()))){
+                    score += 100
+                    map[i][j] = 3
+                    map[i+1][j] = 3
+                    map[i][j+1] = 3
+                    map[i+1][j+1] = 3  
+                    }
+                j += 2
+            }
+            i += 2
+        }
     }
 
     checkCollision() {
         if( map[this.getMapY()][this.getMapX()] == 1
             ||map[this.getMapY()][this.getMapRightSizeX()] == 1
             ||map[this.getMapRightSizeY()][this.getMapX()] == 1 
-            ||map[this.getMapRightSizeY()][this.getMapRightSizeX()] == 1)
+            ||map[this.getMapRightSizeY()][this.getMapRightSizeX()] == 1
+            ||map[this.getMapY() + 1][this.getMapX()] == 1
+            ||map[this.getMapY()][this.getMapX() + 1]  == 1
+            ||map[this.getMapY() + 1][this.getMapRightSizeX()] == 1
+            ||map[this.getMapRightSizeY()][this.getMapX() + 1] == 1)
             {
-                return true
+                return true 
             }
         return false
     }
@@ -76,7 +98,47 @@ class Pacman {
     }
 
     changeDirectionIfPossible() {
+        if (this.nextDirection == this.direction) return
+        
+        let tempDirection = this.direction
+        this.direction = this.nextDirection
+        this.moveForwards()
+        if(this.checkCollision()){
+            this.moveBackwards()
+            this.direction = tempDirection
+        } else {
+            this.moveBackwards()
+        }
+    }
 
+    checkChangeDirection() { 
+        switch (this.nextDirection) {
+            case DIRECTION_UP:
+                if((map[this.getMapY() - 1][this.getMapX() + 1] == 0)
+                    && ((map[this.getMapY() - 1][this.getMapRightSizeX()] == 0)
+                        ||(map[this.getMapY() - 1][this.getMapX()] == 0)))
+                return true
+                break
+            case DIRECTION_DOWN: 
+                if((map[this.getMapY() + 2][this.getMapX() + 1] == 0)
+                    && ((map[this.getMapY() + 2][this.getMapX()] == 0)
+                        ||(map[this.getMapY() + 2][this.getMapRightSizeX()] == 0)))
+                return true
+                break
+            case DIRECTION_RIGHT:
+                if((map[this.getMapY() + 1][this.getMapX() + 2] == 0)
+                    && ((map[this.getMapY()][this.getMapX() + 2] == 0)
+                        || (map[this.getMapRightSizeY()][this.getMapX() + 2] == 0)))
+                return true 
+                break
+            case DIRECTION_LEFT:
+                if((map[this.getMapY() + 1][this.getMapX() - 1] == 0)
+                    && ((map[this.getMapRightSizeY()][this.getMapX() - 1] == 0)
+                        || (map[this.getMapY()][this.getMapX() - 1] == 0)))
+                return true
+                break
+        }
+        return false
     }
 
     changeAnimation() {
@@ -91,7 +153,7 @@ class Pacman {
 
         canvasContext.translate(this.x, this.y)
         canvasContext.translate(oneBlockSize , oneBlockSize )
-        canvasContext.rotate((180 * Math.PI) / 180)
+        canvasContext.rotate((90 * this.direction * Math.PI) / 180)
         if(this.currentFrame < 3) {
             canvasContext.drawImage(
                 img,
@@ -99,10 +161,10 @@ class Pacman {
                 215,
                 33,
                 33,
-                -oneBlockSize ,
-                -oneBlockSize ,
-                this.width,
-                this.height
+                -oneBlockSize + 5,
+                -oneBlockSize + 5,
+                this.width - 10,
+                this.height - 10
             )
         }
         else {
@@ -112,10 +174,10 @@ class Pacman {
                 215,
                 33,
                 33,
-                -oneBlockSize ,
-                -oneBlockSize ,
-                this.width,
-                this.height
+                -oneBlockSize + 5,
+                -oneBlockSize + 5,
+                this.width - 10,
+                this.height - 10
             )
         }
         canvasContext.restore()
@@ -130,10 +192,10 @@ class Pacman {
     }
 
     getMapRightSizeX() {
-        return parseInt( (this.x + 1.99999 * oneBlockSize) / oneBlockSize)
+        return parseInt( (this.x + 1.999999999999 * oneBlockSize) / oneBlockSize)
     }
 
     getMapRightSizeY() {
-        return parseInt( (this.y + 1.99999 * oneBlockSize) / oneBlockSize)
+        return parseInt( (this.y + 1.9999999999999 * oneBlockSize) / oneBlockSize)
     }
 }
