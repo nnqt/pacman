@@ -58,35 +58,61 @@ class Pacman {
     }
 
     eat() {
-        let i = 1
+    let i = 1
         while (i < map.length){
             let j = 0
             while (j < map[0].length) {
-                if (map[i][j] != 0) {
-                    j--
-                } else if (((map[i][j] == 0 ) && (map[i][j+1] == 0) && (map[i+1][j] == 0) && (map[i+1][j+1] ==0))
-                    && ((i == this.getMapY()) && (j == this.getMapX()))){
-                    score += 100
-                    map[i][j] = 3
-                    map[i+1][j] = 3
-                    map[i][j+1] = 3
-                    map[i+1][j+1] = 3  
+                if((i == 31) && (j==26) )
+                    j++
+                else if (!((map[i][j] == 0) || (map[i][j] == 4)))  {
+                        j++
+                    } 
+                    else if((map[i][j] == 4 ) && (map[i][j+1] == 4) && (map[i+1][j] == 4) && (map[i+1][j+1] == 4)
+                        && ((i == this.getMapY()) && (j == this.getMapX()))
+                    ){
+                        score += 300
+                        map[i][j] = 3
+                        map[i+1][j] = 3
+                        map[i][j+1] = 3
+                        map[i+1][j+1] = 3  
+                        j+=2
+                    } else if ((map[i][j] == 0 ) && (map[i][j+1] == 0) && (map[i+1][j] == 0) && (map[i+1][j+1] ==0)
+                        && ((i == this.getMapY()) && (j == this.getMapX()))
+                    ){
+                        score += 100
+                        map[i][j] = 3
+                        map[i+1][j] = 3
+                        map[i][j+1] = 3
+                        map[i+1][j+1] = 3
+                        j += 2
+                    } else{
+                        j+=2
                     }
-                j += 2
+                
+                }
+                i += 2
             }
-            i += 2
-        }
     }
+    
 
     checkCollision() {
-        if( map[this.getMapY()][this.getMapX()] == 1
+        if(  map[this.getMapY()][this.getMapX()] == 1
             ||map[this.getMapY()][this.getMapRightSizeX()] == 1
             ||map[this.getMapRightSizeY()][this.getMapX()] == 1 
             ||map[this.getMapRightSizeY()][this.getMapRightSizeX()] == 1
             ||map[this.getMapY() + 1][this.getMapX()] == 1
             ||map[this.getMapY()][this.getMapX() + 1]  == 1
             ||map[this.getMapY() + 1][this.getMapRightSizeX()] == 1
-            ||map[this.getMapRightSizeY()][this.getMapX() + 1] == 1)
+            ||map[this.getMapRightSizeY()][this.getMapX() + 1] == 1
+            ||map[this.getMapY()][this.getMapX()] == 5
+            ||map[this.getMapY()][this.getMapRightSizeX()] == 5
+            ||map[this.getMapRightSizeY()][this.getMapX()] == 5 
+            ||map[this.getMapRightSizeY()][this.getMapRightSizeX()] == 5
+            ||map[this.getMapY() + 1][this.getMapX()] == 5
+            ||map[this.getMapY()][this.getMapX() + 1]  == 5
+            ||map[this.getMapY() + 1][this.getMapRightSizeX()] == 5
+            ||map[this.getMapRightSizeY()][this.getMapX() + 1] == 5
+        )
             {
                 return true 
             }
